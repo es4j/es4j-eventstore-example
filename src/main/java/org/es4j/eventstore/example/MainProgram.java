@@ -1,11 +1,16 @@
 package org.es4j.eventstore.example;
 
-import java.io.IOException;
 import java.util.Scanner;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.es4j.dotnet.TransactionScope;
+import org.es4j.eventstore.api.Commit;
+import org.es4j.eventstore.api.IStoreEvents;
+import org.es4j.eventstore.core.dispatcher.DispatcherDelegate;
+import org.es4j.eventstore.example.Resources;
+import org.es4j.eventstore.example.SomeDomainEvent;
+import org.es4j.eventstore.wireup.Wireup;
 import org.es4j.messaging.api.EventMessage;
+//import org.es4j.eventstore.wireup.Wireup;
 
 
 public class MainProgram {
@@ -41,7 +46,8 @@ public class MainProgram {
 
     private static IStoreEvents wireupEventStore() {
         return Wireup.init()
-        .logToOutputWindow()
+//      .logToOutputWindow()
+/*
         .usingSqlPersistence("EventStore") // Connection string is in app.config
             .enlistInAmbientTransaction() // two-phase commit
             .initializeStorageEngine()
@@ -51,22 +57,27 @@ public class MainProgram {
                 .encryptWith(encryptionKey)
             .hookIntoPipelineUsing(new AuthorizationPipelineHook())
             .usingSynchronousDispatchScheduler()
-                .dispatchTo(new DelegateMessageDispatcher(dispatchCommit))
+                .dispatchTo(new DelegateMessageDispatcher(new DispatchCommit() ))
+*/
             .build();
     }
 
-    private static void dispatchCommit(Commit commit) {
+    private static class DispatchCommit extends DispatcherDelegate<Commit> {
 
-        // This is where we'd hook into our messaging infrastructure, such as NServiceBus,
-        // MassTransit, WCF, or some other communications infrastructure.
-        // This can be a class as well--just implement IDispatchCommits.
-        try {
-            for (EventMessage event : commit.Events) {
-                System.out.println(Resources.messagesDispatched() + 
-                                   ((SomeDomainEvent)@event.Body).Value);
+        @Override
+        public void dispatch(Commit commit) {
+            // This is where we'd hook into our messaging infrastructure, such as NServiceBus,
+            // MassTransit, WCF, or some other communications infrastructure.
+            // This can be a class as well--just implement IDispatchCommits.
+            try {
+                for (EventMessage event : commit.getEvents()) {
+                    System.out.println(Resources.messagesDispatched()
+                            + ((SomeDomainEvent) event.getBody()).getValue());
+                }
+            } 
+            catch (Exception e) {
+                System.out.println(Resources.unableToDispatch());
             }
-        } catch (Exception e) {
-            System.out.println(Resources.unableToDispatch());
         }
     }
 
