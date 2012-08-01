@@ -40,7 +40,7 @@
         </dependency>        
         <dependency>
             <groupId>org.es4j.container</groupId>
-            <artifactId>es4j-container-api</artifactId>
+            <artifactId>es4j-container</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>

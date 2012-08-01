@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.es4j.dotnet.TransactionScope;
 import org.es4j.eventstore.api.Commit;
 import org.es4j.eventstore.api.IStoreEvents;
+import org.es4j.eventstore.core.dispatcher.DelegateMessageDispatcher;
 import org.es4j.eventstore.core.dispatcher.DispatcherDelegate;
 import org.es4j.eventstore.example.Resources;
 import org.es4j.eventstore.example.SomeDomainEvent;
@@ -45,21 +46,20 @@ public class MainProgram {
     }
 
     private static IStoreEvents wireupEventStore() {
-        return Wireup.init()
-//      .logToOutputWindow()
-/*
-        .usingSqlPersistence("EventStore") // Connection string is in app.config
-            .enlistInAmbientTransaction() // two-phase commit
-            .initializeStorageEngine()
-            .trackPerformanceInstance("example")
-            .usingJsonSerialization()
-                .compress()
-                .encryptWith(encryptionKey)
-            .hookIntoPipelineUsing(new AuthorizationPipelineHook())
-            .usingSynchronousDispatchScheduler()
-                .dispatchTo(new DelegateMessageDispatcher(new DispatchCommit() ))
-*/
-            .build();
+        return Wireup
+               .init()
+               .logToOutputWindow()
+               .usingSqlPersistence("EventStore") // Connection string is in app.config
+                   .enlistInAmbientTransaction() // two-phase commit
+                   .initializeStorageEngine()
+                   .trackPerformanceInstance("example")
+                   .usingJsonSerialization()
+                       .compress()
+                       .encryptWith(encryptionKey)
+               .hookIntoPipelineUsing(new AuthorizationPipelineHook())
+               .usingSynchronousDispatchScheduler()
+                   .dispatchTo(new DelegateMessageDispatcher(new DispatchCommit() ))
+               .build();
     }
 
     private static class DispatchCommit extends DispatcherDelegate<Commit> {
