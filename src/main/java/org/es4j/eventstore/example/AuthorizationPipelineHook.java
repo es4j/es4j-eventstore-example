@@ -1,15 +1,21 @@
 package org.es4j.eventstore.example;
 
+import org.es4j.dotnet.GC;
 import org.es4j.eventstore.api.Commit;
 import org.es4j.eventstore.api.IPipelineHook;
-import org.es4j.eventstore.core.dotnet.GC;
+//import org.es4j.eventstore.core.dotnet.GC;
 
 
 public class AuthorizationPipelineHook implements IPipelineHook {
 
     public AuthorizationPipelineHook() {
     }
-    
+
+    @Override
+    public void close() throws Exception {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }    
+    @Override
     public void dispose() {
         this.dispose(true);
         GC.suppressFinalize(this);
@@ -36,13 +42,4 @@ public class AuthorizationPipelineHook implements IPipelineHook {
         // anything to do after the commit has been persisted.
     }
 
-    @Override
-    public void dispose_FORNOW() throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void close() throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 }

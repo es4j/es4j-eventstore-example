@@ -2,16 +2,13 @@ package org.es4j.eventstore.example;
 
 import java.util.Scanner;
 import java.util.UUID;
-import org.es4j.dotnet.TransactionScope;
+import org.es4j.dotnet.data.TransactionScope;
 import org.es4j.eventstore.api.Commit;
 import org.es4j.eventstore.api.IStoreEvents;
 import org.es4j.eventstore.core.dispatcher.DelegateMessageDispatcher;
 import org.es4j.eventstore.core.dispatcher.DispatcherDelegate;
-import org.es4j.eventstore.example.Resources;
-import org.es4j.eventstore.example.SomeDomainEvent;
 import org.es4j.eventstore.wireup.Wireup;
 import org.es4j.messaging.api.EventMessage;
-//import org.es4j.eventstore.wireup.Wireup;
 
 
 public class MainProgram {
